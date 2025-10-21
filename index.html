@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Streams Đà Nẵng</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .video-grid {
+            display: grid;
+            width: 100%;
+            box-sizing: border-box;
+            
+            /* CÀI ĐẶT DI ĐỘNG (1 CỘT) */
+            grid-template-columns: 1fr;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        /* Đây là mỗi ô camera (gồm video và tiêu đề) */
+        .grid-item {
+            display: flex;
+            flex-direction: column; /* Video ở trên, tiêu đề ở dưới */
+            background-color: #1a1a1a;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            /* Tỷ lệ 16:9 */
+            padding-top: 56.25%; 
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Thanh tiêu đề bên dưới video */
+        .video-title {
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 0.9em;
+            font-weight: bold;
+            background-color: #111;
+        }
+
+        /* CÀI ĐẶT MÁY TÍNH BẢNG (2 CỘT) */
+        @media (min-width: 600px) {
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* === CÀI ĐẶT MÁY TÍNH (3 CỘT, VỪA KHÍT MÀN HÌNH) === */
+        @media (min-width: 900px) {
+            body, html {
+                /* SỬ DỤNG 100dvh THAY VÌ 100vh
+                  100dvh (dynamic viewport height) sẽ tự động
+                  trừ đi chiều cao của thanh địa chỉ và taskbar.
+                  Đây chính là thứ bạn cần để "thu nhỏ lại cho vừa màn hình".
+                */
+                height: 100dvh; 
+                overflow: hidden;
+            }
+
+            .video-grid {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                height: 100dvh; /* Dùng 100dvh ở đây nữa */
+                padding: 5px;
+                gap: 5px;
+            }
+            
+            .grid-item {
+                height: 100%; /* Mục lưới lấp đầy ô */
+                border-radius: 0;
+            }
+
+            .video-container {
+                /* Bỏ tỷ lệ 16:9 và để video lấp đầy */
+                padding-top: 0; 
+                flex-grow: 1; /* Video chiếm hết không gian còn lại */
+                height: 100%;
+            }
+
+            .video-title {
+                flex-shrink: 0; /* Tiêu đề không bị co lại */
+                font-size: 0.8em;
+                padding: 6px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="video-grid">
+        
+        <div class="grid-item">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/1iUZQxyN4-E?autoplay=1&mute=1&controls=0" title="Video 1" allow="autoplay" allowfullscreen></iframe>
+            </div>
+            <div class="video-title">TRƯỜNG LÝ TỰ TRỌNG - HƯỚNG KS SÔNG HÀN</div>
+        </div>
+
+        <div class="grid-item">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/UYrAQpA7Lhk?autoplay=1&mute=1&controls=0" title="Video 2" allow="autoplay" allowfullscreen></iframe>
+            </div>
+            <div class="video-title">Trường Tiểu Học Lý Tự Trọng - PTZ</div>
+        </div>
+
+        <div class="grid-item">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/aaA_nJ4oeec?autoplay=1&mute=1&controls=0" title="Video 3" allow="autoplay" allowfullscreen></iframe>
+            </div>
+            <div class="video-title">CÔNG TRƯỜNG LÝ TỰ TRỌNG</div>
+        </div>
+
+        <div class="grid-item">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/oNbdqkEozX0?autoplay=1&mute=1&controls=0" title="Video 4" allow="autoplay" allowfullscreen></iframe>
+            </div>
+            <div class="video-title">CAMERA PTZ KHÁCH SẠN HẢI TRIỀU</div>
+        </div>
+
+        <div class="grid-item">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/xCNRP131kNY?autoplay=1&mute=1&controls=0" title="Video 5" allow="autoplay" allowfullscreen></iframe>
+            </div>
+            <div class="video-title">CÔNG VIÊN APEC - HƯỚNG CẦU RỒNG</div>
+        </div>
+
+        <div class="grid-item">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/muijHPW82vI?autoplay=1&mute=1&controls=0" title="Video 6" allow="autoplay" allowfullscreen></iframe>
+            </div>
+            <div class="video-title">CÔNG VIÊN APEC - HƯỚNG CẦU TRẦN THỊ LÝ</div>
+        </div>
+
+        <div class="grid-item">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/CaMkzNXwVcE?autoplay=1&mute=1&controls=0" title="Video 7" allow="autoplay" allowfullscreen></iframe>
+            </div>
+            <div class="video-title">PTZ BÃI TẮM SỐ 1 - VÕ NGUYÊN GIÁP</div>
+        </div>
+
+        <div class="grid-item">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/AcndFyZebdc?autoplay=1&mute=1&controls=0" title="Video 8" allow="autoplay" allowfullscreen></iframe>
+            </div>
+            <div class="video-title">CẦU SÔNG HÀN - TRẦN HƯNG ĐẠO</div>
+        </div>
+
+        <div class="grid-item">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/VHxNpNjKurU?autoplay=1&mute=1&controls=0" title="Video 9" allow="autoplay" allowfullscreen></iframe>
+            </div>
+            <div class="video-title">CAMERA CẦU RỒNG - ĐÀ NẴNG</div>
+        </div>
+
+    </div>
+
+</body>
+</html>
