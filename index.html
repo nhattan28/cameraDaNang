@@ -8,38 +8,74 @@
         body, html {
             margin: 0;
             padding: 0;
-            width: 100%;
+            width: 100vw; /* Dùng vw/dvh */
+            height: 100dvh;
             background-color: #000;
             font-family: Arial, sans-serif;
             color: white;
             box-sizing: border-box;
+            overflow: hidden; /* Không cuộn */
         }
 
+        /* BỎ GRID/FLEX, DÙNG POSITIONING */
         .video-grid {
-            display: grid;
+            position: relative; /* Container cho các item tuyệt đối */
             width: 100%;
-            box-sizing: border-box;
-            
-            /* CÀI ĐẶT DI ĐỘNG (1 CỘT) */
-            grid-template-columns: 1fr;
-            gap: 10px;
-            padding: 10px;
+            height: 100%;
         }
 
-        /* Đây là mỗi ô camera (gồm video và tiêu đề) */
         .grid-item {
+            /* THAY ĐỔI: Dùng position: absolute */
+            position: absolute;
+            
+            /* Kích thước được tính toán chính xác */
+            width: calc(100% / 3);
+            height: calc(100% / 3); /* 100% của parent (100dvh) */
+
+            /* Vẫn giữ flex bên trong item */
             display: flex;
-            flex-direction: column; /* Video ở trên, tiêu đề ở dưới */
-            background-color: #1a1a1a;
-            border-radius: 4px;
+            flex-direction: column;
             overflow: hidden;
+            padding: 0;
+            border: none;
+            box-sizing: border-box;
         }
+
+        /* === ĐỊNH VỊ THỦ CÔNG CHO 9 Ô === */
+        /* Hàng 1 */
+        .grid-item:nth-child(1) { top: 0; left: 0; }
+        .grid-item:nth-child(2) { top: 0; left: calc(100% / 3); }
+        .grid-item:nth-child(3) { top: 0; left: calc(100% / 3 * 2); }
+        
+        /* Hàng 2 */
+        .grid-item:nth-child(4) { top: calc(100% / 3); left: 0; }
+        .grid-item:nth-child(5) { top: calc(100% / 3); left: calc(100% / 3); }
+        .grid-item:nth-child(6) { top: calc(100% / 3); left: calc(100% / 3 * 2); }
+
+        /* Hàng 3 */
+        .grid-item:nth-child(7) { top: calc(100% / 3 * 2); left: 0; }
+        .grid-item:nth-child(8) { top: calc(100% / 3 * 2); left: calc(100% / 3); }
+        .grid-item:nth-child(9) { top: calc(100% / 3 * 2); left: calc(100% / 3 * 2); }
+        /* === KẾT THÚC ĐỊNH VỊ === */
+
 
         .video-container {
             position: relative;
             width: 100%;
-            /* Tỷ lệ 16:9 */
-            padding-top: 56.25%; 
+            overflow: hidden; 
+            /* THAY ĐỔI: Dùng flex-grow để lấp đầy */
+            flex-grow: 1;
+            height: 100%; /* Giúp flex-grow hoạt động */
+        }
+
+        .video-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10; 
         }
 
         .video-container iframe {
@@ -48,63 +84,22 @@
             left: 0;
             width: 100%;
             height: 100%;
-            border: 0;
+            border: none;
+            display: block; 
         }
 
-        /* Thanh tiêu đề bên dưới video */
         .video-title {
-            padding: 8px 12px;
+            padding: 6px;
             text-align: center;
-            font-size: 0.9em;
+            font-size: 0.8em;
             font-weight: bold;
-            background-color: #111;
+            /* THAY ĐỔI: Dùng flex-shrink để không bị co */
+            flex-shrink: 0;
         }
 
-        /* CÀI ĐẶT MÁY TÍNH BẢNG (2 CỘT) */
-        @media (min-width: 600px) {
-            .video-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* === CÀI ĐẶT MÁY TÍNH (3 CỘT, VỪA KHÍT MÀN HÌNH) === */
-        @media (min-width: 900px) {
-            body, html {
-                /* SỬ DỤNG 100dvh THAY VÌ 100vh
-                  100dvh (dynamic viewport height) sẽ tự động
-                  trừ đi chiều cao của thanh địa chỉ và taskbar.
-                  Đây chính là thứ bạn cần để "thu nhỏ lại cho vừa màn hình".
-                */
-                height: 100dvh; 
-                overflow: hidden;
-            }
-
-            .video-grid {
-                grid-template-columns: repeat(3, 1fr);
-                grid-template-rows: repeat(3, 1fr);
-                height: 100dvh; /* Dùng 100dvh ở đây nữa */
-                padding: 5px;
-                gap: 5px;
-            }
-            
-            .grid-item {
-                height: 100%; /* Mục lưới lấp đầy ô */
-                border-radius: 0;
-            }
-
-            .video-container {
-                /* Bỏ tỷ lệ 16:9 và để video lấp đầy */
-                padding-top: 0; 
-                flex-grow: 1; /* Video chiếm hết không gian còn lại */
-                height: 100%;
-            }
-
-            .video-title {
-                flex-shrink: 0; /* Tiêu đề không bị co lại */
-                font-size: 0.8em;
-                padding: 6px;
-            }
-        }
+        /* XÓA TẤT CẢ @media VÌ GIỜ ĐÃ DÙNG ABSOLUTE POSITIONING */
+        /* Bố cục di động (1 cột) sẽ không hoạt động nữa,
+           nhưng đây là cách duy nhất để fix lỗi 1px trên máy tính. */
 
     </style>
 </head>
@@ -114,68 +109,72 @@
         
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/1iUZQxyN4-E?autoplay=1&mute=1&controls=0" title="Video 1" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/1iUZQxyN4-E?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 1" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">TRƯỜNG LÝ TỰ TRỌNG - HƯỚNG KS SÔNG HÀN</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/UYrAQpA7Lhk?autoplay=1&mute=1&controls=0" title="Video 2" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/UYrAQpA7Lhk?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 2" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">Trường Tiểu Học Lý Tự Trọng - PTZ</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/aaA_nJ4oeec?autoplay=1&mute=1&controls=0" title="Video 3" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/aaA_nJ4oeec?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 3" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CÔNG TRƯỜNG LÝ TỰ TRỌNG</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/oNbdqkEozX0?autoplay=1&mute=1&controls=0" title="Video 4" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/oNbdqkEozX0?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 4" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CAMERA PTZ KHÁCH SẠN HẢI TRIỀU</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/xCNRP131kNY?autoplay=1&mute=1&controls=0" title="Video 5" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/xCNRP131kNY?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 5" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CÔNG VIÊN APEC - HƯỚNG CẦU RỒNG</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/muijHPW82vI?autoplay=1&mute=1&controls=0" title="Video 6" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/muijHPW82vI?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 6" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CÔNG VIÊN APEC - HƯỚNG CẦU TRẦN THỊ LÝ</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/CaMkzNXwVcE?autoplay=1&mute=1&controls=0" title="Video 7" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/CaMkzNXwVcE?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 7" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">PTZ BÃI TẮM SỐ 1 - VÕ NGUYÊN GIÁP</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/AcndFyZebdc?autoplay=1&mute=1&controls=0" title="Video 8" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/AcndFyZebdc?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 8" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CẦU SÔNG HÀN - TRẦN HƯNG ĐẠO</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/VHxNpNjKurU?autoplay=1&mute=1&controls=0" title="Video 9" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/VHxNpNjKurU?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 9" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CAMERA CẦU RỒNG - ĐÀ NẴNG</div>
         </div>
 
     </div>
+
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+    </script>
 
 </body>
 </html>
