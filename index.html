@@ -14,7 +14,7 @@
             font-family: Arial, sans-serif;
             color: white;
             box-sizing: border-box;
-            overflow: hidden; /* Không cuộn */
+            overflow: hidden; /* Không cuộn trên máy tính */
         }
 
         /* BỎ GRID/FLEX, DÙNG POSITIONING */
@@ -97,9 +97,41 @@
             flex-shrink: 0;
         }
 
-        /* XÓA TẤT CẢ @media VÌ GIỜ ĐÃ DÙNG ABSOLUTE POSITIONING */
-        /* Bố cục di động (1 cột) sẽ không hoạt động nữa,
-           nhưng đây là cách duy nhất để fix lỗi 1px trên máy tính. */
+        /* === (THÊM MỚI) BỐ CỤC CHO DI ĐỘNG === */
+        @media (max-width: 768px) {
+            body, html {
+                overflow: auto; /* CHO PHÉP CUỘN TRỞ LẠI */
+                height: auto;
+            }
+
+            .video-grid {
+                position: static; /* Tắt định vị tuyệt đối của grid */
+                height: auto;
+            }
+
+            .grid-item {
+                position: static; /* Tắt định vị tuyệt đối của item */
+                width: 95%;     /* Chiều rộng gần toàn màn hình */
+                height: auto;   /* Chiều cao tự động */
+                margin: 10px auto; /* Căn giữa và tạo khoảng cách */
+            }
+
+            /* Ghi đè tất cả các quy tắc định vị top/left */
+            .grid-item:nth-child(n) {
+                top: auto;
+                left: auto;
+            }
+
+            .video-container {
+                /* Tạo tỷ lệ khung hình 16:9 */
+                position: relative;
+                padding-top: 56.25%; /* 9 / 16 = 0.5625 */
+                height: 0; 
+                flex-grow: 0; /* Tắt flex-grow */
+            }
+            
+            /* iframe sẽ tự lấp đầy .video-container */
+        }
 
     </style>
 </head>
@@ -109,63 +141,63 @@
         
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/1iUZQxyN4-E?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 1" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/1iUZQxyN4-E?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 1" allow="autoplay" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="video-title">TRƯỜNG LÝ TỰ TRỌNG - HƯỚNG KS SÔNG HÀN</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/UYrAQpA7Lhk?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 2" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/UYrAQpA7Lhk?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 2" allow="autoplay" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="video-title">Trường Tiểu Học Lý Tự Trọng - PTZ</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/aaA_nJ4oeec?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 3" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/aaA_nJ4oeec?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 3" allow="autoplay" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="video-title">CÔNG TRƯỜNG LÝ TỰ TRỌNG</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/oNbdqkEozX0?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 4" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/oNbdqkEozX0?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 4" allow="autoplay" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="video-title">CAMERA PTZ KHÁCH SẠN HẢI TRIỀU</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/xCNRP131kNY?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 5" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/xCNRP131kNY?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 5" allow="autoplay" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="video-title">CÔNG VIÊN APEC - HƯỚNG CẦU RỒNG</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/muijHPW82vI?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 6" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/muijHPW82vI?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 6" allow="autoplay" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="video-title">CÔNG VIÊN APEC - HƯỚNG CẦU TRẦN THỊ LÝ</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/CaMkzNXwVcE?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 7" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/CaMkzNXwVcE?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 7" allow="autoplay" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="video-title">PTZ BÃI TẮM SỐ 1 - VÕ NGUYÊN GIÁP</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/AcndFyZebdc?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 8" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/AcndFyZebdc?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 8" allow="autoplay" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="video-title">CẦU SÔNG HÀN - TRẦN HƯNG ĐẠO</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/VHxNpNjKurU?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 9" allow="autoplay" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/VHxNpNjKurU?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 9" allow="autoplay" allowfullscreen loading="lazy"></iframe>
             </div>
             <div class="video-title">CAMERA CẦU RỒNG - ĐÀ NẴNG</div>
         </div>
