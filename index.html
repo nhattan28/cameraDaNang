@@ -9,32 +9,27 @@
             margin: 0;
             padding: 0;
             width: 100vw;
-            height: 100dvh; /* Dùng dvh cho chuẩn */
+            height: 100dvh; 
             background-color: #000;
             font-family: Arial, sans-serif;
             color: white;
             box-sizing: border-box;
-            overflow: hidden; /* Luôn không cuộn */
-
-            /* === THAY ĐỔI: Chuyển body sang flex column === */
-            /* Việc này để chia màn hình thành 2 phần: grid và controls */
+            overflow: hidden; 
             display: flex;
             flex-direction: column;
         }
 
-        /* === 1. CONTAINER CHÍNH === */
+        /* 1. VÙNG VIDEO */
         .video-grid {
-            /* === THAY ĐỔI: Để grid tự lấp đầy không gian === */
             flex-grow: 1; /* Tự lấp đầy không gian còn lại */
-            height: 0;    /* Bắt buộc cho flex-grow hoạt động */
+            height: 0;    /* Bắt buộc cho flex-grow */
             width: 100%;
             box-sizing: border-box;
-            /* Các thuộc tính còn lại sẽ do .paginated-mode hoặc .grid-mode quyết định */
         }
 
-        /* === 2. BỐ CỤC ITEM CƠ BẢN (luôn áp dụng) === */
+        /* 2. ITEM VIDEO CƠ BẢN */
         .grid-item {
-            display: none;
+            display: none; /* Mặc định ẩn */
             flex-direction: column;
             overflow: hidden;
             padding: 0;
@@ -43,6 +38,7 @@
             background-color: #111;
         }
 
+        /* Lớp 'active' do JS thêm vào để hiển thị */
         .grid-item.active {
             display: flex;
         }
@@ -83,11 +79,11 @@
             flex-shrink: 0;
         }
 
-        /* === 3. CHẾ ĐỘ XEM CHIA TRANG (PAGINATED) === */
+        /* 3. CHẾ ĐỘ CHIA TRANG (PAGINATED) */
         .video-grid.paginated-mode {
             display: flex;
-            flex-direction: row; 
-            height: 100%; /* Lấp đầy 100% của .video-grid (đã co lại) */
+            flex-direction: row; /* 3 video nằm ngang (trên PC) */
+            height: 100%; 
         }
 
         .video-grid.paginated-mode .grid-item.active {
@@ -99,10 +95,10 @@
             left: auto;
         }
 
-        /* === 4. CHẾ ĐỘ XEM LƯỚI 3x3 (GRID) === */
+        /* 4. CHẾ ĐỘ LƯỚI 3x3 (GRID) */
         .video-grid.grid-mode {
             position: relative;
-            height: 100%; /* Lấp đầy 100% của .video-grid (đã co lại) */
+            height: 100%; 
         }
 
         .video-grid.grid-mode .grid-item {
@@ -124,28 +120,20 @@
         .video-grid.grid-mode .grid-item:nth-child(9) { top: calc(100% / 3 * 2); left: calc(100% / 3 * 2); }
 
 
-        /* === 5. BỘ ĐIỀU KHIỂN === */
-        /* === THAY ĐỔI: Bỏ 'position: fixed' === */
+        /* 5. VÙNG ĐIỀU KHIỂN */
         .controls {
-            /* Bỏ các thuộc tính định vị cũ */
-            /* position: fixed; */ 
-            /* bottom: 10px; */
-            /* left: 50%; */
-            /* transform: translateX(-50%); */
-            
-            /* Thuộc tính mới cho thanh bar */
-            position: static; /* Nằm trong luồng bình thường */
+            position: static; 
             width: 100%;
             background-color: #000;
-            padding: 8px 0; /* Chỉ đệm trên/dưới */
+            padding: 8px 0; 
             z-index: 100;
             display: flex;
             gap: 10px;
             align-items: center;
-            justify-content: center; /* Căn giữa các nút */
-            flex-shrink: 0; /* Không bị co lại */
+            justify-content: center; 
+            flex-shrink: 0; 
             box-sizing: border-box;
-            border-top: 1px solid #333; /* Thêm đường viền ngăn cách */
+            border-top: 1px solid #333; 
         }
         .controls button {
             background-color: #444;
@@ -166,7 +154,7 @@
             font-weight: bold;
         }
 
-        /* Ẩn/hiện nút tùy theo chế độ (như cũ) */
+        /* Ẩn/hiện nút tùy theo chế độ */
         .grid-mode .pagination-controls,
         .grid-mode #btn-show-all {
             display: none;
@@ -175,29 +163,26 @@
             display: none;
         }
 
-        /* === 6. DI ĐỘNG === */
+        /* 6. DI ĐỘNG */
         @media (max-width: 768px) {
+            /* Chế độ chia trang: 3 video nằm dọc */
             .video-grid.paginated-mode {
-                flex-direction: column; /* Xếp dọc */
+                flex-direction: column;
             }
-            
-            /* === THAY ĐỔI: Bỏ 33.33vh, dùng flex: 1 === */
             .video-grid.paginated-mode .grid-item.active {
-                flex: 1; /* Chia đều không gian còn lại (thay vì 33.33vh) */
-                height: 0; /* Bắt buộc cho flex: 1 hoạt động */
+                flex: 1; /* Chia đều không gian dọc */
+                height: 0; 
                 width: 100%;
             }
-
             .video-title {
                 font-size: 0.7em; 
                 padding: 4px;
             }
-
+            /* Ẩn nút Trước/Sau trên di động (để đơn giản) */
             .controls .pagination-controls {
                 display: none;
             }
         }
-
     </style>
 </head>
 <body>
@@ -296,6 +281,7 @@
         let currentPage = 1;
         const totalPages = 3;
 
+        // Hàm TẢI video (đặt 'src' từ 'data-src')
         function loadVideo(item) {
             const iframe = item.querySelector('iframe');
             if (iframe && !iframe.getAttribute('src')) {
@@ -303,39 +289,64 @@
             }
         }
 
+        // Hàm GỠ TẢI video (xóa 'src' để dừng tải)
+        function unloadVideo(item) {
+            const iframe = item.querySelector('iframe');
+            if (iframe && iframe.getAttribute('src')) {
+                iframe.removeAttribute('src');
+            }
+        }
+
+        // Hàm hiển thị trang (CHỈ TẢI 3 VIDEO CỦA TRANG NÀY)
         function showPage(page) {
             currentPage = page;
-            items.forEach(item => item.classList.remove('active'));
+
             const startIndex = (page - 1) * 3;
             const endIndex = startIndex + 3;
 
-            for (let i = startIndex; i < endIndex; i++) {
-                if (items[i]) {
-                    items[i].classList.add('active');
-                    loadVideo(items[i]);
+            // Duyệt qua tất cả 9 item
+            items.forEach((item, index) => {
+                // Kiểm tra xem item có thuộc trang này không
+                if (index >= startIndex && index < endIndex) {
+                    // CÓ: Hiển thị và Tải
+                    item.classList.add('active');
+                    loadVideo(item);
+                } else {
+                    // KHÔNG: Ẩn và GỠ TẢI
+                    item.classList.remove('active');
+                    unloadVideo(item);
                 }
-            }
+            });
+
+            // Cập nhật nút
             pageIndicator.textContent = `Trang ${currentPage} / ${totalPages}`;
             btnPrev.disabled = (currentPage === 1);
             btnNext.disabled = (currentPage === 3);
         }
 
+        // Hàm hiển thị lưới (TẢI TẤT CẢ 9 VIDEO)
         function showGridMode() {
             grid.classList.remove('paginated-mode');
             grid.classList.add('grid-mode');
             btnShowAll.style.display = 'none';
             btnShowGrid.style.display = 'inline-block';
+            
+            // Tải tất cả video
             items.forEach(item => loadVideo(item));
         }
 
+        // Hàm quay về chế độ trang (GỠ TẢI 6 VIDEO KHÔNG CẦN THIẾT)
         function showPaginatedMode() {
             grid.classList.add('paginated-mode');
             grid.classList.remove('grid-mode');
             btnShowAll.style.display = 'inline-block';
             btnShowGrid.style.display = 'none';
-            showPage(currentPage);
+            
+            // Gọi lại showPage, nó sẽ tự động gỡ tải các video không thuộc trang hiện tại
+            showPage(currentPage); 
         }
 
+        // Gắn sự kiện cho các nút
         btnPrev.addEventListener('click', () => {
             if (currentPage > 1) {
                 showPage(currentPage - 1);
@@ -351,6 +362,7 @@
         btnShowAll.addEventListener('click', showGridMode);
         btnShowGrid.addEventListener('click', showPaginatedMode);
 
+        // KHỞI ĐỘNG: Hiển thị trang 1 (chỉ tải 3 video đầu tiên)
         showPage(1);
     </script>
 
