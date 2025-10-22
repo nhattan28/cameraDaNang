@@ -8,64 +8,51 @@
         body, html {
             margin: 0;
             padding: 0;
-            width: 100vw; /* Dùng vw/dvh */
-            height: 100dvh;
+            width: 100vw;
+            height: 100dvh; /* Dùng dvh cho chuẩn */
             background-color: #000;
             font-family: Arial, sans-serif;
             color: white;
             box-sizing: border-box;
-            overflow: hidden; /* Không cuộn trên máy tính */
-        }
+            overflow: hidden; /* Luôn không cuộn */
 
-        /* BỎ GRID/FLEX, DÙNG POSITIONING */
-        .video-grid {
-            position: relative; /* Container cho các item tuyệt đối */
-            width: 100%;
-            height: 100%;
-        }
-
-        .grid-item {
-            /* THAY ĐỔI: Dùng position: absolute */
-            position: absolute;
-            
-            /* Kích thước được tính toán chính xác */
-            width: calc(100% / 3);
-            height: calc(100% / 3); /* 100% của parent (100dvh) */
-
-            /* Vẫn giữ flex bên trong item */
+            /* === THAY ĐỔI: Chuyển body sang flex column === */
+            /* Việc này để chia màn hình thành 2 phần: grid và controls */
             display: flex;
+            flex-direction: column;
+        }
+
+        /* === 1. CONTAINER CHÍNH === */
+        .video-grid {
+            /* === THAY ĐỔI: Để grid tự lấp đầy không gian === */
+            flex-grow: 1; /* Tự lấp đầy không gian còn lại */
+            height: 0;    /* Bắt buộc cho flex-grow hoạt động */
+            width: 100%;
+            box-sizing: border-box;
+            /* Các thuộc tính còn lại sẽ do .paginated-mode hoặc .grid-mode quyết định */
+        }
+
+        /* === 2. BỐ CỤC ITEM CƠ BẢN (luôn áp dụng) === */
+        .grid-item {
+            display: none;
             flex-direction: column;
             overflow: hidden;
             padding: 0;
             border: none;
             box-sizing: border-box;
+            background-color: #111;
         }
 
-        /* === ĐỊNH VỊ THỦ CÔNG CHO 9 Ô === */
-        /* Hàng 1 */
-        .grid-item:nth-child(1) { top: 0; left: 0; }
-        .grid-item:nth-child(2) { top: 0; left: calc(100% / 3); }
-        .grid-item:nth-child(3) { top: 0; left: calc(100% / 3 * 2); }
-        
-        /* Hàng 2 */
-        .grid-item:nth-child(4) { top: calc(100% / 3); left: 0; }
-        .grid-item:nth-child(5) { top: calc(100% / 3); left: calc(100% / 3); }
-        .grid-item:nth-child(6) { top: calc(100% / 3); left: calc(100% / 3 * 2); }
-
-        /* Hàng 3 */
-        .grid-item:nth-child(7) { top: calc(100% / 3 * 2); left: 0; }
-        .grid-item:nth-child(8) { top: calc(100% / 3 * 2); left: calc(100% / 3); }
-        .grid-item:nth-child(9) { top: calc(100% / 3 * 2); left: calc(100% / 3 * 2); }
-        /* === KẾT THÚC ĐỊNH VỊ === */
-
+        .grid-item.active {
+            display: flex;
+        }
 
         .video-container {
             position: relative;
             width: 100%;
             overflow: hidden; 
-            /* THAY ĐỔI: Dùng flex-grow để lấp đầy */
-            flex-grow: 1;
-            height: 100%; /* Giúp flex-grow hoạt động */
+            flex-grow: 1; 
+            height: 100%; 
         }
 
         .video-container::after {
@@ -93,119 +80,278 @@
             text-align: center;
             font-size: 0.8em;
             font-weight: bold;
-            /* THAY ĐỔI: Dùng flex-shrink để không bị co */
             flex-shrink: 0;
         }
 
-        /* === (THÊM MỚI) BỐ CỤC CHO DI ĐỘNG === */
+        /* === 3. CHẾ ĐỘ XEM CHIA TRANG (PAGINATED) === */
+        .video-grid.paginated-mode {
+            display: flex;
+            flex-direction: row; 
+            height: 100%; /* Lấp đầy 100% của .video-grid (đã co lại) */
+        }
+
+        .video-grid.paginated-mode .grid-item.active {
+            flex: 1; 
+            position: relative; 
+            height: 100%;
+            width: auto;
+            top: auto;
+            left: auto;
+        }
+
+        /* === 4. CHẾ ĐỘ XEM LƯỚI 3x3 (GRID) === */
+        .video-grid.grid-mode {
+            position: relative;
+            height: 100%; /* Lấp đầy 100% của .video-grid (đã co lại) */
+        }
+
+        .video-grid.grid-mode .grid-item {
+            display: flex; 
+            position: absolute;
+            width: calc(100% / 3);
+            height: calc(100% / 3);
+        }
+
+        /* Định vị 9 ô */
+        .video-grid.grid-mode .grid-item:nth-child(1) { top: 0; left: 0; }
+        .video-grid.grid-mode .grid-item:nth-child(2) { top: 0; left: calc(100% / 3); }
+        .video-grid.grid-mode .grid-item:nth-child(3) { top: 0; left: calc(100% / 3 * 2); }
+        .video-grid.grid-mode .grid-item:nth-child(4) { top: calc(100% / 3); left: 0; }
+        .video-grid.grid-mode .grid-item:nth-child(5) { top: calc(100% / 3); left: calc(100% / 3); }
+        .video-grid.grid-mode .grid-item:nth-child(6) { top: calc(100% / 3); left: calc(100% / 3 * 2); }
+        .video-grid.grid-mode .grid-item:nth-child(7) { top: calc(100% / 3 * 2); left: 0; }
+        .video-grid.grid-mode .grid-item:nth-child(8) { top: calc(100% / 3 * 2); left: calc(100% / 3); }
+        .video-grid.grid-mode .grid-item:nth-child(9) { top: calc(100% / 3 * 2); left: calc(100% / 3 * 2); }
+
+
+        /* === 5. BỘ ĐIỀU KHIỂN === */
+        /* === THAY ĐỔI: Bỏ 'position: fixed' === */
+        .controls {
+            /* Bỏ các thuộc tính định vị cũ */
+            /* position: fixed; */ 
+            /* bottom: 10px; */
+            /* left: 50%; */
+            /* transform: translateX(-50%); */
+            
+            /* Thuộc tính mới cho thanh bar */
+            position: static; /* Nằm trong luồng bình thường */
+            width: 100%;
+            background-color: #000;
+            padding: 8px 0; /* Chỉ đệm trên/dưới */
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center; /* Căn giữa các nút */
+            flex-shrink: 0; /* Không bị co lại */
+            box-sizing: border-box;
+            border-top: 1px solid #333; /* Thêm đường viền ngăn cách */
+        }
+        .controls button {
+            background-color: #444;
+            color: white;
+            border: 1px solid #666;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .controls button:disabled {
+            background-color: #222;
+            color: #777;
+            cursor: not-allowed;
+        }
+        .controls .page-indicator {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Ẩn/hiện nút tùy theo chế độ (như cũ) */
+        .grid-mode .pagination-controls,
+        .grid-mode #btn-show-all {
+            display: none;
+        }
+        .paginated-mode #btn-show-grid {
+            display: none;
+        }
+
+        /* === 6. DI ĐỘNG === */
         @media (max-width: 768px) {
-            body, html {
-                overflow: auto; /* CHO PHÉP CUỘN TRỞ LẠI */
-                height: auto;
-            }
-
-            .video-grid {
-                position: static; /* Tắt định vị tuyệt đối của grid */
-                height: auto;
-            }
-
-            .grid-item {
-                position: static; /* Tắt định vị tuyệt đối của item */
-                width: 95%;     /* Chiều rộng gần toàn màn hình */
-                height: auto;   /* Chiều cao tự động */
-                margin: 10px auto; /* Căn giữa và tạo khoảng cách */
-            }
-
-            /* Ghi đè tất cả các quy tắc định vị top/left */
-            .grid-item:nth-child(n) {
-                top: auto;
-                left: auto;
-            }
-
-            .video-container {
-                /* Tạo tỷ lệ khung hình 16:9 */
-                position: relative;
-                padding-top: 56.25%; /* 9 / 16 = 0.5625 */
-                height: 0; 
-                flex-grow: 0; /* Tắt flex-grow */
+            .video-grid.paginated-mode {
+                flex-direction: column; /* Xếp dọc */
             }
             
-            /* iframe sẽ tự lấp đầy .video-container */
+            /* === THAY ĐỔI: Bỏ 33.33vh, dùng flex: 1 === */
+            .video-grid.paginated-mode .grid-item.active {
+                flex: 1; /* Chia đều không gian còn lại (thay vì 33.33vh) */
+                height: 0; /* Bắt buộc cho flex: 1 hoạt động */
+                width: 100%;
+            }
+
+            .video-title {
+                font-size: 0.7em; 
+                padding: 4px;
+            }
+
+            .controls .pagination-controls {
+                display: none;
+            }
         }
 
     </style>
 </head>
 <body>
 
-    <div class="video-grid">
+    <div class="video-grid paginated-mode">
         
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/1iUZQxyN4-E?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 1" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                <iframe data-src="https://www.youtube.com/embed/1iUZQxyN4-E?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 1" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">TRƯỜNG LÝ TỰ TRỌNG - HƯỚNG KS SÔNG HÀN</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/UYrAQpA7Lhk?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 2" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                <iframe data-src="https://www.youtube.com/embed/UYrAQpA7Lhk?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 2" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">Trường Tiểu Học Lý Tự Trọng - PTZ</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/aaA_nJ4oeec?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 3" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                <iframe data-src="https://www.youtube.com/embed/aaA_nJ4oeec?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 3" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CÔNG TRƯỜNG LÝ TỰ TRỌNG</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/oNbdqkEozX0?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 4" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                <iframe data-src="https://www.youtube.com/embed/oNbdqkEozX0?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 4" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CAMERA PTZ KHÁCH SẠN HẢI TRIỀU</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/xCNRP131kNY?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 5" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                <iframe data-src="https://www.youtube.com/embed/xCNRP131kNY?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 5" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CÔNG VIÊN APEC - HƯỚNG CẦU RỒNG</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/muijHPW82vI?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 6" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                <iframe data-src="https://www.youtube.com/embed/muijHPW82vI?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 6" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CÔNG VIÊN APEC - HƯỚNG CẦU TRẦN THỊ LÝ</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/CaMkzNXwVcE?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 7" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                <iframe data-src="https://www.youtube.com/embed/CaMkzNXwVcE?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 7" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">PTZ BÃI TẮM SỐ 1 - VÕ NGUYÊN GIÁP</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/AcndFyZebdc?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 8" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                <iframe data-src="https://www.youtube.com/embed/AcndFyZebdc?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 8" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CẦU SÔNG HÀN - TRẦN HƯNG ĐẠO</div>
         </div>
 
         <div class="grid-item">
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/VHxNpNjKurU?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 9" allow="autoplay" allowfullscreen loading="lazy"></iframe>
+                <iframe data-src="https://www.youtube.com/embed/VHxNpNjKurU?autoplay=1&mute=1&controls=0&disablekb=1" title="Video 9" allow="autoplay" allowfullscreen></iframe>
             </div>
             <div class="video-title">CAMERA CẦU RỒNG - ĐÀ NẴNG</div>
         </div>
 
     </div>
 
+    <div class="controls">
+        <div class="pagination-controls">
+            <button id="btn-prev" disabled>&lt; Trước</button>
+            <span class="page-indicator" id="page-indicator">Trang 1 / 3</span>
+            <button id="btn-next">Sau &gt;</button>
+        </div>
+        
+        <button id="btn-show-all">Xem Toàn Bộ (9)</button>
+        <button id="btn-show-grid" style="display: none;">Thu Gọn (3)</button>
+    </div>
+
     <script>
         document.addEventListener('contextmenu', event => event.preventDefault());
+
+        const grid = document.querySelector('.video-grid');
+        const items = document.querySelectorAll('.grid-item');
+        
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const pageIndicator = document.getElementById('page-indicator');
+        
+        const btnShowAll = document.getElementById('btn-show-all');
+        const btnShowGrid = document.getElementById('btn-show-grid');
+
+        let currentPage = 1;
+        const totalPages = 3;
+
+        function loadVideo(item) {
+            const iframe = item.querySelector('iframe');
+            if (iframe && !iframe.getAttribute('src')) {
+                iframe.src = iframe.getAttribute('data-src');
+            }
+        }
+
+        function showPage(page) {
+            currentPage = page;
+            items.forEach(item => item.classList.remove('active'));
+            const startIndex = (page - 1) * 3;
+            const endIndex = startIndex + 3;
+
+            for (let i = startIndex; i < endIndex; i++) {
+                if (items[i]) {
+                    items[i].classList.add('active');
+                    loadVideo(items[i]);
+                }
+            }
+            pageIndicator.textContent = `Trang ${currentPage} / ${totalPages}`;
+            btnPrev.disabled = (currentPage === 1);
+            btnNext.disabled = (currentPage === 3);
+        }
+
+        function showGridMode() {
+            grid.classList.remove('paginated-mode');
+            grid.classList.add('grid-mode');
+            btnShowAll.style.display = 'none';
+            btnShowGrid.style.display = 'inline-block';
+            items.forEach(item => loadVideo(item));
+        }
+
+        function showPaginatedMode() {
+            grid.classList.add('paginated-mode');
+            grid.classList.remove('grid-mode');
+            btnShowAll.style.display = 'inline-block';
+            btnShowGrid.style.display = 'none';
+            showPage(currentPage);
+        }
+
+        btnPrev.addEventListener('click', () => {
+            if (currentPage > 1) {
+                showPage(currentPage - 1);
+            }
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+            }
+        });
+
+        btnShowAll.addEventListener('click', showGridMode);
+        btnShowGrid.addEventListener('click', showPaginatedMode);
+
+        showPage(1);
     </script>
 
 </body>
